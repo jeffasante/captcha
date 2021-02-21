@@ -50,8 +50,8 @@ unique_letters = set(char for word in targets for char in word)
 class CaptchaDataset(Dataset):
     """
         Args:
-            data (string): Path to the csv file with all the images.
-            target (string): Path to the csv file with annotations.
+            data (string): Path to the file with all the images.
+            target (string): Path to the file with annotations.
             transform (callable, optional): Optional transform to be applied
                 on a sample.
         """
