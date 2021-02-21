@@ -5,8 +5,7 @@ import torch.nn.functional as F
 
 class CRNN(nn.Module):
     
-    def __init__(self, h, w, outputs, hidden_size=0, num_channels=3,
-                num_layers=2):
+    def __init__(self, h, w, outputs, num_channels=3, num_layers=2):
         super(CRNN, self).__init__()
         
         self.conv1 = nn.Conv2d(num_channels, 512, kernel_size=3, padding=(1,1))
@@ -23,7 +22,7 @@ class CRNN(nn.Module):
         
         self.conv4 = nn.Conv2d(128, 64, kernel_size=3, padding=(1,1))
         self.maxpool4 = nn.MaxPool2d(2)
-        self.batchnorm4 = nn.BatchNorm2d(128)
+        self.batchnorm4 = nn.BatchNorm2d(64)
 
         self.conv5 = nn.Conv2d(64, 64, kernel_size=3, padding=(1,1))
         self.maxpool5 = nn.MaxPool2d(2)
@@ -41,16 +40,26 @@ class CRNN(nn.Module):
         
     def forward(self, input):
         bs, c, h, w = input.size()
-                
-        x  = F.leaky_relu(self.conv1(input))
+        
+        x  = F.leaky_relu(self.batchnorm1(self.conv1(input)))
         x  = self.maxpool1(x)
-        x  = F.leaky_relu(self.conv2(x))
-        conv  = self.maxpool2(x) 
+        x  = F.leaky_relu(self.batchnorm2(self.conv2(x)))
+        
+        x  = F.leaky_relu(self.batchnorm3(self.conv3(x)))
+        conv  = self.maxpool2(x) # 1, 64, 18, 75
+        
+#         print(conv.shape)
+        x  = F.leaky_relu(self.batchnorm4(self.conv4(x)))
+        conv  = self.maxpool2(x) # 1, 64, 18, 75
+        
+        x  = F.leaky_relu(self.batchnorm5(self.conv5(x)))
+        conv  = self.maxpool2(x)
+        
         conv =  conv.permute(0, 3, 1, 2) 
         conv = conv.view(bs, conv.size(1), -1)
-        
+#         print(conv.shape)
         conv = conv.permute(1, 0, 2)
-        
+#         print(conv.shape)
         x = self.head(conv)
         x = self.dropout(x)
         
@@ -58,6 +67,12 @@ class CRNN(nn.Module):
         outs, _ = self.gru(x)
         
         return outs 
+        
+        
+        
+        
+    
+    
         
         
         
