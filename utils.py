@@ -1,6 +1,11 @@
+''' Handling the data io '''
+
 from torchvision import transforms, datasets
 import numpy as np
 
+
+import zipfile
+from io import open
 import glob
 from PIL import Image, ImageOps
 import os
