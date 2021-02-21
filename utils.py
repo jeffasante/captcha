@@ -18,8 +18,6 @@ class CaptchaDataset(Dataset):
         """
     
     def __init__(self, data, target=None, transform=None):
-        
-         
         self.data = data
         self.target = target
         self.transform = transform   
@@ -47,7 +45,7 @@ class CaptchaDataset(Dataset):
     # find letter inde from targets_flat
 def letterToIndex(letter):
     return all_letters.find(letter)
-print(letterToIndex('l'))
+# print(letterToIndex('l'))
 
 # index to letter
 indexToLetter = {letterToIndex(i):i for i in all_letters}
