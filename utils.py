@@ -69,11 +69,9 @@ class CaptchaDataset(Dataset):
         # resize, turn to 0,1
         if self.transform:
             x = self.transform(x)
-        
-#         x = np.array(x).astype(np.float32)
-        return x, torch.tensor(y, dtype=torch.long)
-#         x = torch.tensor(x, dtype=torch.float32).clone().detach() 
-#         y = torch.tensor(y, dtype=torch.long)
+
+            return x, torch.tensor(y, dtype=torch.long)
+
        
         return x, y    
     
